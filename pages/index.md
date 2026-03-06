@@ -16,6 +16,10 @@ title: Security Wait Times at GRR
 
 </Details>
 
+```sql days
+    select date from system_phase_reference.delays
+```
+
 ```sql delays
     select weekday,
            weekday_name,
@@ -31,6 +35,7 @@ title: Security Wait Times at GRR
    select date,
    sum(case when precheck_minutes > 5 or standard_minutes > 5 then 1 else 0 end) as waits
    from system_phase_reference.delays
+   where date between '${inputs.observation_range.start}' and '${inputs.observation_range.end}'
    group by date,
    order by date
 ```
@@ -116,7 +121,7 @@ title: Security Wait Times at GRR
 
 <DateRange
     name=observation_range
-    data={delay_days}
+    data={days}
     dates=date
 />
 
@@ -140,3 +145,4 @@ title: Security Wait Times at GRR
     legend=false
 />
 
+<LastRefreshed />
