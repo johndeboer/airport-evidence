@@ -4,7 +4,7 @@ on:
   push:
     branches: 'main' # or whichever branch you want to deploy from
   schedule:
-    # This is every 10 minutes
+    # This is every hour at 40 minutes past
     - cron: '40 */1 * * *' 
 
 jobs:
