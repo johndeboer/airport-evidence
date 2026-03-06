@@ -1,0 +1,6 @@
+# This file was automatically generated
+name: system_phase_reference
+type: bigquery
+options:
+  authenticator: service-account
+  location: us-east5
