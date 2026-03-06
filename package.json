@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "evidence build",
+    "buildPages": "EVIDENCE_BUILD_DIR=./build/my-evidence-app evidence build",
     "build:strict": "evidence build:strict",
     "dev": "evidence dev --open /",
     "test": "evidence build",
