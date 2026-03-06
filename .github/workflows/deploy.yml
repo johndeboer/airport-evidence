@@ -26,11 +26,11 @@ jobs:
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
 
-          EVIDENCE_SOURCE__system_phase_reference__authenticator: ${{ EVIDENCE_SOURCE__system_phase_reference__authenticator }}
-          EVIDENCE_SOURCE__system_phase_reference__location: ${{ EVIDENCE_SOURCE__system_phase_reference__location }}
-          EVIDENCE_SOURCE__system_phase_reference__client_email: ${{ EVIDENCE_SOURCE__system_phase_reference__client_email }}
-          EVIDENCE_SOURCE__system_phase_reference__private_key: ${{ EVIDENCE_SOURCE__system_phase_reference__private_key }}
-          EVIDENCE_SOURCE__system_phase_reference__project_id: ${{ EVIDENCE_SOURCE__system_phase_reference__project_id }}
+          EVIDENCE_SOURCE__system_phase_reference__authenticator: ${{ secrets.EVIDENCE_SOURCE__system_phase_reference__authenticator }}
+          EVIDENCE_SOURCE__system_phase_reference__location: ${{ secrets.EVIDENCE_SOURCE__system_phase_reference__location }}
+          EVIDENCE_SOURCE__system_phase_reference__client_email: ${{ secrets.EVIDENCE_SOURCE__system_phase_reference__client_email }}
+          EVIDENCE_SOURCE__system_phase_reference__private_key: ${{ secrets.EVIDENCE_SOURCE__system_phase_reference__private_key }}
+          EVIDENCE_SOURCE__system_phase_reference__project_id: ${{ secrets.EVIDENCE_SOURCE__system_phase_reference__project_id }}
 
         run: |
           npm run sources
