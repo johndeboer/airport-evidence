@@ -25,9 +25,13 @@ jobs:
       - name: build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
-          ## Add and uncomment any environment variables here
-          ## EVIDENCE_SOURCE__my_source__username: ${{ secrets.EVIDENCE_SOURCE__MY_SOURCE__USERNAME }}
-          ## EVIDENCE_SOURCE__my_source__private_key: ${{ secrets.EVIDENCE_SOURCE__MY_SOURCE__PRIVATE_KEY }}
+
+          EVIDENCE_SOURCE__system_phase_reference__authenticator: ${{ EVIDENCE_SOURCE__system_phase_reference__authenticator }}
+          EVIDENCE_SOURCE__system_phase_reference__location: ${{ EVIDENCE_SOURCE__system_phase_reference__location }}
+          EVIDENCE_SOURCE__system_phase_reference__client_email: ${{ EVIDENCE_SOURCE__system_phase_reference__client_email }}
+          EVIDENCE_SOURCE__system_phase_reference__private_key: ${{ EVIDENCE_SOURCE__system_phase_reference__private_key }}
+          EVIDENCE_SOURCE__system_phase_reference__project_id: ${{ EVIDENCE_SOURCE__system_phase_reference__project_id }}
+
         run: |
           npm run sources
           npm run buildPages
