@@ -17,7 +17,7 @@ title: Security Wait Times at GRR
 </Details>
 
 ```sql days
-    select date from system_phase_reference.delays
+    select distinct date from system_phase_reference.delays
 ```
 
 ```sql delays
