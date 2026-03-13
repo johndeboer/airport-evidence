@@ -80,5 +80,5 @@ plugins:
     "@evidence-dev/trino": { }
     "@evidence-dev/motherduck": { }
 
-deployment:
-  basePath: /airport-evidence
+# deployment:
+  # basePath: /airport-evidence
