@@ -31,11 +31,11 @@ title: Security Wait Times at GRR
            order by weekday, time_bucket_label
 ```
 
-```sql longest_delay
+```sql longest_wait
     select weekday,
            weekday_name,
            time_bucket_label,
-           max(greatest(precheck_minutes, standard_minutes)) as longest_delay
+           max(greatest(precheck_minutes, standard_minutes)) as longest_wait
     from system_phase_reference.delays
     where date between '${inputs.observation_range.start}' and '${inputs.observation_range.end}'
     group by weekday, time_bucket_label, weekday_name
@@ -156,12 +156,12 @@ title: Security Wait Times at GRR
     legend=false
 />
 
-<Heatmap data={longest_delay}
+<Heatmap data={longest_wait}
     title = 'Longest Wait'
     subtitle = 'Wait Time in Minutes'
     x = weekday_name
     y = time_bucket_label
-    value = longest_delay
+    value = longest_wait
     colorPalette = {'white','darkorange'}
     legend = false
 />
