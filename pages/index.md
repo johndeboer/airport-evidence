@@ -2,6 +2,10 @@
 title: Security Wait Times at GRR
 ---
 
+<Tabs>
+
+<Tab label="Wait Times">
+
 <Details title='Definitions'>
 
     Definitions of metrics used in this dashboard
@@ -167,3 +171,111 @@ title: Security Wait Times at GRR
 />
 
 <LastRefreshed />
+
+</Tab>
+
+<Tab label="Trip Planner">
+
+```sql latest_week_start
+   select (current_date - interval '26 weeks')::date as week_start
+```
+
+```sql last_wait_over_5_mins
+    select 
+        weekday,
+        weekday_name,
+        time_bucket_label,
+        max(date) as last_occurrence_date,
+        max(greatest(precheck_minutes, standard_minutes)) as wait_length
+    from system_phase_reference.delays
+    where (greatest(precheck_minutes, standard_minutes)) > 5
+        and weekday = '${inputs.selected_weekday.value}'
+        and time_bucket_label = '${inputs.selected_time_bucket.value}'
+    group by weekday, weekday_name, time_bucket_label
+```
+
+```sql longest_wait_in_slot
+    select max(greatest(precheck_minutes, standard_minutes)) as longest_wait
+    from system_phase_reference.delays
+    where weekday = '${inputs.selected_weekday.value}'
+        and time_bucket_label = '${inputs.selected_time_bucket.value}'
+```
+
+```sql max_wait_26_weeks
+    select 
+        date_trunc('day', date)::date as week,
+        max(greatest(precheck_minutes, standard_minutes)) as max_wait
+    from system_phase_reference.delays
+    where weekday = '${inputs.selected_weekday.value}'
+        and time_bucket_label = '${inputs.selected_time_bucket.value}'
+        -- and date >= (current_date - interval '26 weeks')
+    group by date_trunc('day', date)::date
+    order by week
+```
+
+Select your travel day and time to see when you last would have encountered a wait:
+
+<Grid cols=2>
+    <Dropdown
+        data={delays}
+        name=selected_weekday
+        title="Day of Week"
+        value=weekday
+        label=weekday_name
+    />
+    
+    <Dropdown
+        data={delays}
+        name=selected_time_bucket
+        title="Time Bucket"
+        value=time_bucket_label
+        label=time_bucket_label
+    />
+</Grid>
+
+<Grid cols=4>
+    <BigValue 
+        data={last_wait_over_5_mins}
+        value=last_occurrence_date
+        fmt=shortdate
+        title="Last 5+ Min Wait"
+        emptySet=pass
+        emptyMessage="No waits over 5 minutes"
+    />
+    
+    <BigValue 
+        data={last_wait_over_5_mins}
+        value=wait_length
+        fmt=num0
+        title="Wait Length (min)"
+        emptySet=pass
+        emptyMessage="No waits over 5 minutes"
+    />
+    
+    <BigValue 
+        data={longest_wait_in_slot}
+        value=longest_wait
+        fmt=num0
+        title="Longest Wait Ever"
+    />
+    
+    <BigValue 
+        data={max_wait_26_weeks}
+        value=max_wait
+        fmt=num0
+        title="Max Wait (26 weeks)"
+    />
+</Grid>
+
+<LineChart 
+    data={max_wait_26_weeks}
+    x=week
+    y=max_wait
+    title="Max Wait Time Over Last 26 Weeks"
+    subtitle="For selected day and time"
+    yAxisTitle="Max Wait (minutes)"
+/>
+
+</Tab>
+
+</Tabs>
