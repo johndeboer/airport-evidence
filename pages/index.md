@@ -24,6 +24,14 @@ title: Security Wait Times at GRR
     select distinct date from system_phase_reference.delays
 ```
 
+```sql times
+    select distinct time_bucket_label from system_phase_reference.delays
+```
+
+```sql weekdays
+    select distinct weekday, weekday_name from system_phase_reference.delays
+```
+
 ```sql delays
     select weekday,
            weekday_name,
@@ -225,15 +233,16 @@ Select your travel day and time to see when you last would have encountered a wa
 
 <Grid cols=2>
     <Dropdown
-        data={delays}
+        data={weekdays}
         name=selected_weekday
         title="Day of Week"
         value=weekday
         label=weekday_name
+        order=weekday
     />
     
     <Dropdown
-        data={delays}
+        data={times}
         name=selected_time_bucket
         title="Time Bucket"
         value=time_bucket_label
