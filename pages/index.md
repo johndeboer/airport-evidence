@@ -181,17 +181,25 @@ title: Security Wait Times at GRR
 ```
 
 ```sql last_wait_over_5_mins
-    select 
-        weekday,
-        weekday_name,
-        time_bucket_label,
-        max(date) as last_occurrence_date,
-        max(greatest(precheck_minutes, standard_minutes)) as wait_length
-    from system_phase_reference.delays
-    where (greatest(precheck_minutes, standard_minutes)) > 5
-        and weekday = '${inputs.selected_weekday.value}'
-        and time_bucket_label = '${inputs.selected_time_bucket.value}'
-    group by weekday, weekday_name, time_bucket_label
+    with last_date as (
+        select max(date) as last_occurrence_date
+        from system_phase_reference.delays
+        where greatest(precheck_minutes, standard_minutes) > 5
+            and weekday = '${inputs.selected_weekday.value}'
+            and time_bucket_label = '${inputs.selected_time_bucket.value}'
+    )
+    select
+        d.weekday,
+        d.weekday_name,
+        d.time_bucket_label,
+        ld.last_occurrence_date,
+        max(greatest(d.precheck_minutes, d.standard_minutes)) as wait_length
+    from system_phase_reference.delays d
+    cross join last_date ld
+    where d.date = ld.last_occurrence_date
+        and d.weekday = '${inputs.selected_weekday.value}'
+        and d.time_bucket_label = '${inputs.selected_time_bucket.value}'
+    group by d.weekday, d.weekday_name, d.time_bucket_label, ld.last_occurrence_date
 ```
 
 ```sql longest_wait_in_slot
@@ -237,7 +245,7 @@ Select your travel day and time to see when you last would have encountered a wa
     <BigValue 
         data={last_wait_over_5_mins}
         value=last_occurrence_date
-        fmt=fulldate
+        fmt="ddd mmm d, yyyy"
         title="Last 5+ Min Wait"
         emptySet=pass
         emptyMessage="No waits over 5 minutes"
@@ -247,7 +255,7 @@ Select your travel day and time to see when you last would have encountered a wa
         data={last_wait_over_5_mins}
         value=wait_length
         fmt=num0
-        title="Wait Length (min)"
+        title="Last Wait Length"
         emptySet=pass
         emptyMessage="No waits over 5 minutes"
     />
