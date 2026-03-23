@@ -237,7 +237,7 @@ Select your travel day and time to see when you last would have encountered a wa
     <BigValue 
         data={last_wait_over_5_mins}
         value=last_occurrence_date
-        fmt=shortdate
+        fmt=fulldate
         title="Last 5+ Min Wait"
         emptySet=pass
         emptyMessage="No waits over 5 minutes"
