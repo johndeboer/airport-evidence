@@ -25,7 +25,7 @@ title: Security Wait Times at GRR
 ```
 
 ```sql times
-    select distinct time_bucket_label from system_phase_reference.delays
+    select distinct time_bucket_label, time_bucket_start from system_phase_reference.delays
 ```
 
 ```sql weekdays
@@ -36,22 +36,24 @@ title: Security Wait Times at GRR
     select weekday,
            weekday_name,
            time_bucket_label,
+           time_bucket_start,
            sum(case when precheck_minutes > 5 or standard_minutes > 5 then 1 else 0 end) as waits
             from system_phase_reference.delays
             where date between '${inputs.observation_range.start}' and '${inputs.observation_range.end}'
-           group by weekday, time_bucket_label, weekday_name
-           order by weekday, time_bucket_label
+           group by weekday, time_bucket_label, weekday_name, time_bucket_start
+           order by weekday, time_bucket_start
 ```
 
 ```sql longest_wait
     select weekday,
            weekday_name,
            time_bucket_label,
+           time_bucket_start,
            max(greatest(precheck_minutes, standard_minutes)) as longest_wait
     from system_phase_reference.delays
     where date between '${inputs.observation_range.start}' and '${inputs.observation_range.end}'
-    group by weekday, time_bucket_label, weekday_name
-    order by weekday, time_bucket_label
+    group by weekday, time_bucket_label, weekday_name, time_bucket_start
+    order by weekday, time_bucket_start
 ```
 
 ```sql delay_days
@@ -153,6 +155,7 @@ title: Security Wait Times at GRR
     subtitle = 'By Day and Time'
     x = weekday_name
     y = time_bucket_label
+    ySort = time_bucket_start
     value = waits
     valueLabels=false
     colorPalette={'white','darkorange'}
@@ -173,6 +176,7 @@ title: Security Wait Times at GRR
     subtitle = 'Wait Time in Minutes'
     x = weekday_name
     y = time_bucket_label
+    ySort = time_bucket_start
     value = longest_wait
     colorPalette = {'white','darkorange'}
     legend = false
@@ -247,6 +251,7 @@ Select your travel day and time to see when you last would have encountered a wa
         title="Time Bucket"
         value=time_bucket_label
         label=time_bucket_label
+        order=time_bucket_start
     />
 </Grid>
 

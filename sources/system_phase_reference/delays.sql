@@ -13,7 +13,7 @@ dim_date as (
 ),
 dim_time_bucket as (
     select time_bucket_key,
-           time_bucket_label,
+           time_bucket_label_12hr,
            start_hour,
            end_hour
     from `system-phase-reference`.`gold`.`dim_time_bucket`
@@ -36,7 +36,8 @@ weekdays as (
 select weekday,
        weekday_name,
        date,
-        time_bucket_label,
+        time_bucket_label_12hr as time_bucket_label,
+        start_hour as time_bucket_start,
         precheck_minutes,
         standard_minutes
 from fact
